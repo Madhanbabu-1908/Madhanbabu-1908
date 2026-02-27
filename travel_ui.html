@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Travel Insurance Advisor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      font-family: "Segoe UI", Arial;
+      background: #eef3f9;
+      margin: 0;
+    }
+
+    header {
+      background: #003366;
+      color: white;
+      padding: 15px 30px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .hero {
+      padding: 40px;
+      text-align: center;
+      background: white;
+    }
+
+    .hero h2 {
+      color: #003366;
+    }
+
+    .features {
+      display: flex;
+      gap: 20px;
+      padding: 30px;
+    }
+
+    .card {
+      background: white;
+      flex: 1;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    /* Floating Chat */
+    .chat-icon {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #003366;
+      color: white;
+      padding: 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 22px;
+    }
+
+    .chat-box {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 360px;
+      height: 500px;
+      background: white;
+      border-radius: 15px;
+      display: none;
+      flex-direction: column;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .chat-header {
+      background: #003366;
+      color: white;
+      padding: 12px;
+      font-weight: bold;
+    }
+
+    .messages {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      background: #f4f7fb;
+    }
+
+    .message {
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      max-width: 80%;
+      font-size: 14px;
+    }
+
+    .user {
+      background: #003366;
+      color: white;
+      margin-left: auto;
+    }
+
+    .bot {
+      background: #e0eaf5;
+    }
+
+    .input-area {
+      display: flex;
+      border-top: 1px solid #ddd;
+    }
+
+    .input-area input {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      outline: none;
+    }
+
+    .input-area button {
+      background: #003366;
+      color: white;
+      border: none;
+      padding: 12px;
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<header>✈ AI Travel Insurance Advisor</header>
+
+<div class="hero">
+  <h2>Understand Your Travel Insurance in Simple Words</h2>
+  <p>Compare policies, analyze coverage, and get personalized recommendations instantly.</p>
+</div>
+
+<div class="features">
+  <div class="card">
+    <h3>Policy Comparison</h3>
+    <p>Compare coverage, premium, exclusions & claim procedures.</p>
+  </div>
+  <div class="card">
+    <h3>Personalized Advice</h3>
+    <p>Get tailored insurance recommendations based on your travel profile.</p>
+  </div>
+  <div class="card">
+    <h3>Claim Simplification</h3>
+    <p>Understand claim steps in simple language.</p>
+  </div>
+</div>
+
+<div class="chat-icon" onclick="toggleChat()">💬</div>
+
+<div class="chat-box" id="chatBox">
+  <div class="chat-header">AI Insurance Expert</div>
+  <div class="messages" id="messages"></div>
+  <div class="input-area">
+    <input id="userInput" placeholder="Describe your travel plan..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+</div>
+
+<script>
+function toggleChat() {
+  let box = document.getElementById("chatBox");
+  box.style.display = box.style.display === "flex" ? "none" : "flex";
+}
+
+async function sendMessage() {
+  let input = document.getElementById("userInput");
+  let msg = input.value.trim();
+  if (!msg) return;
+
+  let messages = document.getElementById("messages");
+  messages.innerHTML += `<div class="message user">${msg}</div>`;
+  input.value = "";
+
+  let res = await fetch("/chat", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({message: msg})
+  });
+
+  let data = await res.json();
+  messages.innerHTML += `<div class="message bot">${data.reply}</div>`;
+  messages.scrollTop = messages.scrollHeight;
+}
+</script>
+
+</body>
+</html>
